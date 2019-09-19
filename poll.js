@@ -2,7 +2,7 @@ const request = require('request');
 
 var loggedIn = false;
 let jar = request.jar();
-let apiURL = "http://192.168.1.1/api/model.json?internalapi=1&x=99";
+let apiURL = "http://192.168.1.1/api/model.json?internalapi=1&x=" + Date.now();
 
 const isOnline = require('is-online');
 
