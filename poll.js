@@ -8,7 +8,7 @@ const isOnline = require('is-online');
 
 function createOptions(url) {
     return {
-        timeout: 1000,
+        timeout: 1500,
         url: url,
         jar: jar
     }
