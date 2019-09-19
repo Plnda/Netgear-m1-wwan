@@ -46,13 +46,10 @@ function getSession() {
 
     request.get(createOptions(apiURL), (error, response, body) => {
 
-
-
         if (error != null) {
-            console.log("[Router] Server not available");
+            console.log("[Router] Server not available " + error);
             return;
         }
-
 
         let data = JSON.parse(body);
 
@@ -73,6 +70,7 @@ function getSession() {
                     toggleWWAN(true, data);
                 }, 1500);
             }
+            console.log('online');
         });
 
         deleteAllSMS(data);
