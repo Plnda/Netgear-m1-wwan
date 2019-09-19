@@ -1,0 +1,17 @@
+{
+  "name": "internet",
+  "version": "1.0.0",
+  "description": "",
+  "main": "poll.js",
+  "scripts": {
+    "start": "node poll",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "internet-available": "^1.0.0",
+    "is-online": "^8.2.0",
+    "request": "^2.88.0"
+  }
+}
