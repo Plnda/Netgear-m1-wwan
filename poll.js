@@ -2,7 +2,7 @@ const request = require('request');
 
 var loggedIn = false;
 let jar = request.jar();
-let apiURL = "http://192.168.1.1/api/model.json?internalapi=1&x=10";
+let apiURL = "http://192.168.1.1/api/model.json?internalapi=1&x=99";
 
 const isOnline = require('is-online');
 
@@ -44,22 +44,20 @@ function toggleWWAN(on, data) {
 
 function getSession() {
 
-    request.get(createOptions(apiURL), (response, data, error) => {
+    request.get(createOptions(apiURL), (error, response, body) => {
+
+
 
         if (error != null) {
             console.log("[Router] Server not available");
             return;
         }
 
-        if (data == null) {
-            console.log("[Router] Body is not available");
-            return;
-        }
 
-        let body = JSON.parse(data.body);
+        let data = JSON.parse(body);
 
         if (!loggedIn) {
-            login(body);
+            login(data);
             return;
         }
 
@@ -68,16 +66,16 @@ function getSession() {
         }).then(online => {
 
             if (!online) {
-
-                toggleWWAN(false, body);
+                console.log('offline');
+                toggleWWAN(false, data);
 
                 setTimeout(() => {
-                    toggleWWAN(true, body);
+                    toggleWWAN(true, data);
                 }, 1500);
             }
         });
 
-        deleteAllSMS(body);
+        deleteAllSMS(data);
     });
 }
 
@@ -96,7 +94,7 @@ function login(data) {
             "token": token,
             "session.password": password
         }
-    }, function (response, data, error) {
+    }, function (error, response, body) {
         loggedIn = true;
     });
 }
@@ -115,7 +113,7 @@ function deleteAllSMS(data) {
             "token": token,
             "sms.deleteAll": 1
         }
-    }, function (response, data, error) {
+    }, function (error, response, body) {
 
     });
 }
