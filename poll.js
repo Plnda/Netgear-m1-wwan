@@ -2,8 +2,8 @@ const request = require('request');
 
 var loggedIn = false;
 let jar = request.jar();
-let apiURL = "http://192.168.1.1/api/model.json?internalapi=1&x=" + Date.now();
-
+let apiURL = "http://192.168.1.1/api/model.json?internalapi=1&x=" + Date.now() + "&debug=jason";
+let isBusy = false;
 const isOnline = require('is-online');
 
 function createOptions(url) {
@@ -37,8 +37,8 @@ function toggleWWAN(on, data) {
             "token": token,
             "wwan.autoconnect": type
         }
-    }, function (response, data, error) {
-
+    }, function (error, response, body) {
+        console.log("Logged in");
     });
 }
 
@@ -51,23 +51,26 @@ function getSession() {
             return;
         }
 
-        let data = JSON.parse(body);
+        let data = JSON.parse(response.body);
 
         if (!loggedIn) {
             login(data);
             return;
         }
 
+
         isOnline({
             timeout: 1000,
         }).then(online => {
 
-            if (!online) {
+            if (!online && !isBusy) {
                 console.log('offline');
+                isBusy = true;
                 toggleWWAN(false, data);
 
                 setTimeout(() => {
                     toggleWWAN(true, data);
+                    isBusy = false
                 }, 1500);
             }
             console.log('online');
@@ -80,7 +83,7 @@ function getSession() {
 function login(data) {
 
     let token = data.session.secToken;
-    let password = "djwzqbs8rNgCXtyhvAUgwaXT";
+    let password = "figdiz-nisrez-cAgco8";
     let url = "http://192.168.1.1" + data.general.configURL;
 
     request.post({
@@ -94,6 +97,7 @@ function login(data) {
         }
     }, function (error, response, body) {
         loggedIn = true;
+        console.log(response.body);
     });
 }
 
@@ -111,9 +115,7 @@ function deleteAllSMS(data) {
             "token": token,
             "sms.deleteAll": 1
         }
-    }, function (error, response, body) {
-
-    });
+    }, function (error, response, body) {});
 }
 
 function onRouterResponse() {
